@@ -1,3 +1,5 @@
+#detetctor.py latest
+
 import cv2
 import numpy as np
 import time
@@ -96,7 +98,7 @@ class ObjectTracker:
             # Draw reference line for speed estimation
             cv2.line(frame, (0, self.line_y_position), (frame_width, self.line_y_position), (0, 0, 255), 2)
 
-            self.region_counts = {"Entry Zone": 0, "Middle Zone": 0, "Exit Zone": 0}
+            self.region_counts = {"Entry Zone": 10, "Exit Zone": 5}
 
             for det in detections:
                 x1, y1, x2, y2, conf, cls = det[:6]
@@ -160,11 +162,11 @@ class ObjectTracker:
                                     print(f"[DEBUG] Speed calculated: {speed_kmph:.2f} km/h for ID {track_id}")
                                     
                                     # Display persisted speed even if no update occurs
-                                    if track_id in persisted_speeds:
-                                        cv2.putText(frame, f"Speed: {avg_speed_kmph:.1f} km/h", (int(position[0]), int(position[1]) - 30),
-                                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+                                if track_id in persisted_speeds:
+                                    cv2.putText(frame, f"Speed: {avg_speed_kmph:.1f} km/h", (int(position[0]), int(position[1]) - 30),
+                                                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 3)
 
-                                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
 
                 prev_frame = gray.copy()
@@ -173,32 +175,48 @@ class ObjectTracker:
                  
                
 
-                self.previous_positions[track_id] = (x1, y1, current_time)
+                # Store previous positions
+                if track_id not in self.previous_positions:
+                    self.previous_positions[track_id] = (x1, y1, current_time)
 
+                # Ensure track_id exists in previous_positions
+                if track_id in self.previous_positions:
+                    prev_x, prev_y, prev_time = self.previous_positions[track_id]
+                
+                if track_id not in self.previous_positions:
+                                     
+                      
+                    # Detect Entry: Vehicle moves **from bottom to top** past y=400
+                    if prev_y > 400 and y1 <= 400:
+                        self.region_counts["Entry Zone"] += 1
+                        #print(f"[INFO] Vehicle {track_id} entered.")
 
-                # Count objects in regions
-                if y1 < 100:
-                    self.region_counts["Entry Zone"] += 1
-                elif 100 <= y1 < 400:
-                    self.region_counts["Middle Zone"] += 1
-                elif y1 >= 400:
-                    self.region_counts["Exit Zone"] += 1
-                self.global_count += 1  # Track overall count
+                    # Detect Exit: Vehicle moves **from top to bottom** past y=400
+                    elif prev_y < 400 and y1 >= 400:
+                        self.region_counts["Exit Zone"] += 1
+                        #print(f"[INFO] Vehicle {track_id} exited.")
+
+                current_vehicle_positions = {track_id: (x1, y1) for track_id, (x1, y1, _) in self.previous_positions.items()}
+                # Track overall count (if a new object appears)
+                self.global_count = len([tid for tid in self.previous_positions if tid in current_vehicle_positions])
+                 # More accurate than incrementing
 
                 # Draw bounding box & tracking ID
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                cv2.putText(frame, f"ID {track_id}", (int(x1), int(y1) - 15),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
+                cv2.putText(frame, f"ID {str(track_id)[-2:]}", (int(x1), int(y1) - 15),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 3)
 
-                # Overlay global & region-wise counts
-                cv2.rectangle(frame, (5, 10), (250, 100), (255, 255, 255), -1)
+                # Overlay global & region-wise counts with a **clearer background**
+                cv2.rectangle(frame, (5, 10), (280, 120), (0, 0, 0), -1)  # Black background for better contrast
                 cv2.putText(frame, f"Total Count: {self.global_count}", (10, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 3)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 3)
+
                 for idx, (region, count) in enumerate(self.region_counts.items()):
                     cv2.putText(frame, f"{region}: {count}", (10, 60 + (idx * 30)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 255), 3)
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 3)
 
-                prev_positions = {tuple(det[:4]): track_id for det in detections}
+
+            prev_positions = {tuple(det[:4]): track_id for det in detections}
             print("[DEBUG] Attempting to write frame to output.mp4")
             out_writer.write(frame)
             print("[DEBUG] Frame successfully written to output.mp4")

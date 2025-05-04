@@ -7,7 +7,7 @@ import numpy as np
 import subprocess
 from flask import Flask, render_template, request, redirect, url_for, send_file
 #import detector
-from app.detector import ObjectTracker
+from detector import ObjectTracker
 
 STATIC_FOLDER = os.path.join(os.path.dirname(__file__), "static")
 app = Flask(__name__, static_folder=STATIC_FOLDER, static_url_path="/static")
