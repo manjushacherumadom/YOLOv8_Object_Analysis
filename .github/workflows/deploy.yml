@@ -16,11 +16,20 @@ jobs:
     - name: Set up Docker
       run: |
         docker build -t flask-app .
-        docker run -d -p 5000:5000 --name flask-container flask-app
+        docker run -d --memory=2g -p 5000:5000 --name flask-container flask-app
+
+    - name: Check Running Containers
+      run: docker ps
+
+    - name: Check Memory Usage
+      run: free -m
 
     - name: Run Tests
       run: |
-        docker exec flask-container pytest
+        docker exec flask-container pytest --disable-warnings --maxfail=1
+
+    - name: Check Flask Container Logs (If Needed)
+      run: docker logs flask-container
 
     - name: Push Docker Image to GitHub Packages (Optional)
       run: |
