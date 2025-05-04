@@ -31,8 +31,15 @@ jobs:
     - name: Check Flask Container Logs (If Needed)
       run: docker logs flask-container
 
-    - name: Push Docker Image to GitHub Packages (Optional)
+    - name: Authenticate Docker with GitHub Packages
       run: |
-        echo "${{ secrets.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 }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        docker tag flask-app ghcr.io/${{ github.repository }}/flask-app:latest
-        docker push ghcr.io/${{ github.repository }}/flask-app:latest
+        echo "${{ secrets.PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Tag Docker Image
+      run: |
+        docker tag flask-app ghcr.io/${{ github.actor }}/yolov8_object_analysis/flask-app:latest
+
+    - name: Push Docker Image
+      run: |
+        docker push ghcr.io/${{ github.actor }}/yolov8_object_analysis/flask-app:latest
+
