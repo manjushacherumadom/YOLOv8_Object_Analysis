@@ -6,8 +6,9 @@ import cv2
 import numpy as np
 import subprocess
 from flask import Flask, render_template, request, redirect, url_for, send_file
+from app import detector
 #import detector
-from detector import ObjectTracker
+from app.detector import ObjectTracker
 
 STATIC_FOLDER = os.path.join(os.path.dirname(__file__), "static")
 app = Flask(__name__, static_folder=STATIC_FOLDER, static_url_path="/static")
@@ -21,6 +22,8 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 ALLOWED_EXTENSIONS = {"mp4", "avi", "mov", "mkv"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["TESTING"] = True
+
 tracker = ObjectTracker()
 
 def allowed_file(filename):
