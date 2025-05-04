@@ -1,0 +1,15 @@
+flask
+opencv-python-headless
+numpy
+pandas
+scipy
+ffmpeg-python
+ultralytics
+torch==2.6.0
+torchvision
+pillow
+matplotlib
+lap
+tqdm
+pyyaml
+requests

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Object Tracking Results</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+    </style>
+</head>
+<body>
+    <h1>Processed Video</h1>
+    <video width="640" height="360" controls>
+    <source src="{{ url_for('serve_static', filename='converted_output.mp4') }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+
+
+    <br><br>
+    <a href="/">Upload another video</a>
+</body>
+</html>
