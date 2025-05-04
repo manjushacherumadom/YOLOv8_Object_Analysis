@@ -33,7 +33,7 @@ jobs:
 
     - name: Authenticate Docker with GitHub Packages
       run: |
-        echo "${{ secrets.DOCKER }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        echo "${{ secrets.PATS }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Tag Docker Image
       run: |
