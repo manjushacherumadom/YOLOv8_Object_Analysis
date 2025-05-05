@@ -4,6 +4,9 @@ A real-time system for detecting, tracking, counting, and analyzing object movem
 Objective
 To develop a real-time system for detecting, tracking, counting, and analyzing object movement in surveillance footage using YOLOv8. The system should be capable of region-based counting and estimating object speed, and deployed as a Flask-based web app containerized with Docker.
 
+![image](https://github.com/user-attachments/assets/7a4ab571-d6e4-4f38-884e-d9506a3e2d67)
+
+
 📂 YOLOv8_Object_Analysis
 ├── 📁 app                # Main application logic
 │   ├── 📁 static        # Stores CSS, JS, and images
