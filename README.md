@@ -7,30 +7,9 @@ To develop a real-time system for detecting, tracking, counting, and analyzing o
 ![image](https://github.com/user-attachments/assets/7a4ab571-d6e4-4f38-884e-d9506a3e2d67)
 
 
-📂 YOLOv8_Object_Analysis
-├── 📁 app                # Main application logic
-│   ├── 📁 static        # Stores CSS, JS, and images
-│   ├── 📁 templates     # HTML templates for UI
-│   ├── 📁 uploads       # Folder for storing uploaded images
-│   ├── 📄 app.py        # Entry point for the Flask app
-│   ├── 📄 detector.py   # Object detection functionality
-│   ├── 📄 __init__.py   # Package initializer
-├── 📁 models             # YOLOv8 models and configurations
-│   ├── 📄 yolov8_model.pt
-│   ├── 📄 config.yaml
-├── 📁 tests              # Unit tests for validation
-│   ├── 📄 test_app.py    # Tests for Flask app functionality
-│   ├── 📄 test_detector.py # Tests for object detection functions
-├── 📁 uploads            # Separate folder for storing uploaded files
-├── 📄 Dockerfile         # Docker configuration
-├── 📄 .dockerignore      # Files ignored by Docker builds
-├── 📄 .requirements.txt  # Dependencies needed for the project
-├── 📄 README.md          # Documentation file
-
 Project scope is to focus on objects such as pedestrians, vehicles, or bicycles in outdoor or indoor environments and detect them , estimate their speed and assign unique id’s to each detected object.
 
-Load the YOLOv8 Model
-•	The tracker initializes YOLO("yolov8n.pt") to detect objects in each frame.
+Load the YOLOv8 Model•	The tracker initializes YOLO("yolov8n.pt") to detect objects in each frame.
 •	yolov8n.pt is a lightweight YOLOv8 variant optimized for real-time inference.
 self.model = YOLO("yolov8n.pt")
 
